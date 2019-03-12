@@ -1,0 +1,107 @@
+package com.mechanicAPI.controllers;
+
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mechanicAPI.models.Roles;
+import com.mechanicAPI.services.RoleService;
+
+@CrossOrigin(origins = "http://localhost:8090")
+@RestController
+@RequestMapping("/roles")
+public class RoleController {
+	
+	RoleService roleService = new RoleService();
+	
+	// ------------------- REST API CALL TO GET ALL ROLES ---------------------------- //
+	
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> getRoles(HttpServletResponse response) {
+		
+		response.addHeader("Date", new Date().toString());
+		response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");
+	    response.setHeader("Pragma","no-cache");
+	    response.setHeader("Version","Mechanic API V-2.0");
+	    response.setDateHeader("Expires", 0);
+	    
+		return new ResponseEntity<>(roleService.getRoles(), HttpStatus.OK);
+	}
+	
+	// ------------------- REST API CALL TO GET A ROLE ---------------------------- //
+	
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> getRole(HttpServletResponse response, @PathVariable("id") int id) {
+		
+		response.addHeader("Date", new Date().toString());
+		response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");
+	    response.setHeader("Pragma","no-cache");
+	    response.setHeader("Version","Mechanic API V-2.0");
+	    response.setDateHeader("Expires", 0);
+		
+		return new ResponseEntity<>(roleService.getRole(id), HttpStatus.OK);
+	}
+	
+	// ------------------- REST API CALL TO CREATE A ROLE ---------------------------- //
+	
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> createRole(HttpServletRequest request, HttpServletResponse response,
+			Roles role) {
+		
+		Roles newRole = roleService.createRole(role);
+		
+		response.addHeader("Role Created", request.getServerName() + ":" +  request.getServerPort() + "/roles/" + newRole.getId());
+		response.addHeader("Date", new Date().toString());
+		response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");
+	    response.setHeader("Pragma","no-cache");
+	    response.setHeader("Version","Mechanic API V-2.0");
+	    response.setDateHeader("Expires", 0);
+		
+		return new ResponseEntity<>(newRole, HttpStatus.CREATED);
+	} 
+	
+	// ------------------- REST API CALL TO UPDATE AN EXISTING ROLE ---------------------------- //
+	
+	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> updateRole(HttpServletResponse response, @PathVariable("id") int id, Roles role) { 
+		
+		response.addHeader("Role Update", "Successful");
+		response.addHeader("Date", new Date().toString());
+		response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");
+	    response.setHeader("Pragma","no-cache");
+	    response.setHeader("Version","Mechanic API V-2.0");
+	    response.setDateHeader("Expires", 0);
+		
+		return new ResponseEntity<>(roleService.updateRole(id, role), HttpStatus.OK);
+	}
+	
+	// ------------------- REST API CALL TO DELETE AN EXISTING ROLE ---------------------------- //
+	
+	@DeleteMapping(value = "/{oldid}/{newid}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> deleteRole(HttpServletResponse response,
+			@PathVariable("oldid") int oldID, @PathVariable("newid") int newID) { 
+		
+		response.addHeader("Role Delete", "Successful");
+		response.addHeader("Date", new Date().toString());
+		response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");
+	    response.setHeader("Pragma","no-cache");
+	    response.setHeader("Version","Mechanic API V-2.0");
+	    response.setDateHeader("Expires", 0);
+		
+		return new ResponseEntity<>(roleService.deleteRole(oldID, newID), HttpStatus.OK);
+	}
+
+}
